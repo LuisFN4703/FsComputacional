@@ -108,26 +108,6 @@ subroutine prom_vector(v, dim, avg)
 end subroutine prom_vector
 !--------------------------------------------------------------------------
 
-!subrutina para calcular el valor que mas se desvia de un punto de referencia
-subroutine desv_max(v, dim, ref, max, pos_max)
-	integer, intent(in) :: dim
-	real(8), intent(in) :: v(dim), ref
-	real(8), intent(out) :: max
-	integer, intent(out) :: pos_max
-	integer i
-
-	max = 0.0
-	pos_max = 1
-	do i = 1, dim 
-		if (abs(v(i)-ref) .GE. max) then
-			max = abs(v(i)-ref)
-			pos_max=i
-		endif
-	enddo
-
-end subroutine desv_max
-!-----------------------------------------------------------------------------
-
 subroutine filtrar_menores(v, dim, N, v_filtrado, indices, contador)
     implicit none
     
@@ -145,7 +125,7 @@ subroutine filtrar_menores(v, dim, N, v_filtrado, indices, contador)
     contador = 0
 
     do i = 1, dim
-        ! ACÁ ESTÁ EL CAMBIO: estrictamente menor (<)
+
         if (v(i) < N) then
             contador = contador + 1
             v_filtrado(contador) = v(i)

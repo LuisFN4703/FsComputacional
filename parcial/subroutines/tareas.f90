@@ -21,17 +21,18 @@ implicit none
     call prom_vector(v1, ncol, tavg)
 
     ! 2. Mes más lluvioso y mm caídos 
-    ref = 0.0_dp
-    call desv_max(v5, ncol, ref, max_lluvia, pmax)
+	max_lluvia = maxval(v5)
+	temp_arr = maxloc(v5)
+    pmax = temp_arr(1)
 
     ! 3. Meses con humedad menor a 50% 
     N = 50.0_dp
     ! v_filtrado y contador operan aquí, pero no salen de la subrutina
     call filtrar_menores(v4, ncol, N, v_filtrado, indices, contador)
 
-    ! 4. Mes con temperatura mínima más baja y dicha temperatura (v2)
-    min_temp = minval(v2)
-    temp_arr = minloc(v2)
+    ! 4. Mes con temperatura mínima más baja y dicha temperatura (v3)
+    min_temp = minval(v3)
+    temp_arr = minloc(v3)
     pmin = temp_arr(1)
 
     ! 5. Estimacion de cuando las temperaturas son iguales a 20 °C

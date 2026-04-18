@@ -14,7 +14,7 @@ implicit none
 	!abre un archivo data.out, si exite lo remplaza y si no, lo crea
     open(unit=38, file="data.out", status="replace")
     
-    write(38, '(A)') "--- RESULTADOS CLIMATOLOGICOS DE BAHÍA BLANCA EN 2011 ---"
+    write(38, '(A)') "--- RESULTADOS CLIMATOLÓGICOS DE BAHÍA BLANCA EN 2011 ---"
     write(38, *)
     
     write(38, '(A)') "El promedio de la temperatura media fue:" 
@@ -30,22 +30,21 @@ implicit none
     if (maxval(indices) > 0) then
             do i = 1, nc
                 if (indices(i) > 0) then
-                    write(38, '(A, A)') "  - Mes: ", trim(meses(i))
+                    write(38, '(A, A)') "  - Mes: ", trim(meses(indices(i)))
                 end if
             end do
 	else
-            write(38, *) "Ningun mes registro humedad menor al 50%"
+            write(38, '(A)') "Ningún mes registró humedad menor al 50%"
 	end if
     write(38, *)
     
     write(38, '(A)') "El mes con la temperatura minima mas baja fue"
-	write(38, '(A, A, F6.2)') trim(meses(pmin)), &
-        " y dicha temperatura fue: ", &
-        min_temp, " (°C)"
+	write(38, '(A, A, F6.2, A)') trim(meses(pmin)), &
+        " y dicha temperatura fue: ", min_temp, " (°C)"
 	write(38, *)
 
 	if (n_cruces > 0) then
-		write(38, '(A)') "Estimacion de cuando a temperatura alcazó los 20 °C:"
+		write(38, '(A)') "Estimación de cuando a temperatura alcazó los 20 °C:"
 		
 			do j = 1, n_cruces
 				n_mes = int(cruces(j))
@@ -63,7 +62,7 @@ implicit none
 				endif
 			enddo
 		else
-		write(28, '(A)') "Las temperaturas no fueron iguales a 20 °C"
+		write(38, '(A)') "Las temperaturas no fueron iguales a 20 °C"
 	endif
     
     close(38)
