@@ -5,8 +5,7 @@ contains
 !subrutina para sacar la primera fila (encabezado) y la primera columna
 subroutine matriz_util(nombre_archivo, nrow, ncol, matriz)
 
-	!variable local para definir la precicion de vectores y matrices
-	integer, parameter :: dp = selected_real_kind(15, 307)
+	!variable local para definir la precicion de vectores y m
 	
 	!-------------VARIABLES DE ENTRADA -------------------------------
 	character(len=*), intent(in) :: nombre_archivo
@@ -130,16 +129,8 @@ end subroutine desv_min
 
 
 subroutine extraer_fila(nrow, ncol, matriz, indice_fila, vector)
-    implicit none
-    integer, parameter :: dp = selected_real_kind(15, 307)
-    
-    ! Dimensiones y el número de la fila que quieres extraer
     integer, intent(in) :: nrow, ncol, indice_fila
-    
-    ! Matriz original de entrada
     real(dp), intent(in)  :: matriz(nrow, ncol)
-    
-    ! Vector de salida (tendrá el tamaño de las columnas)
     real(dp), intent(out) :: vector(ncol)
     
     ! Control de seguridad: verificamos que la fila exista

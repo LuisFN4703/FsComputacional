@@ -1,10 +1,10 @@
-subroutine leer_input(nf, nc)
+subroutine leer_input(nrow, ncol)
+use subrutinas_parcial
 implicit none
-	integer, intent(out) :: nf, nc
+	integer, intent(out) :: nrow, ncol
 
-	call system("pwd")
-	call readMatrix(trim("input/bahia2011.dat"), nf, nc)
-	nf = nf -1
-	nc = nc -1
+	call contar_dimensiones(trim("input/bahia2011.dat"), nrow, ncol)
+	nrow = nrow - 1
+	ncol = ncol - 1
 
 end subroutine leer_input
