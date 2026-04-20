@@ -108,15 +108,43 @@ real*8 :: b(0,n), c(0,n), d(0,n), h(0,n)
 integer :: nd, s, inf
 
 real*8 :: l(0,n), dp(0,n), u(0,n) !vectores para cargar la matriz tridiagonal
-real
+real*8 :: matriz(0:n, 0:n)
 integer :: i, j
 
-!Paso 1
+
+!Paso 1: construccion de h
 	do i=0, n-1
 		h(i) = x(i+1)-x(i)
 	enddo
 
-!Paso 2
+!Paso 2: costruccion de b (vector)
+	b(0) = 0
+	do i=1, n-1
+		b(i) = (3/h(i))*(yint(i+1)-yint(i)) - (3/h(i-1))*(yint(i)-yint(i-1))
+	enddo
+	b(n) = 0
 
+!Paso 3: construccion de la matriz
+	!costruyo el vector u
+	u(0) = 0
+	do i = 1, n-1
+		u(i) = h(i)
+	enddo
+	
+	!construyo el vector d
+	d(0)=1
+	do i = 1, n-1
+		d(i) = 2*(h(i-2)+h(i-1))
+	enddo
+	d(n) = 1
+	
+	!costruyo el vector l
+	do i=0, n-2
+		l(i) = h(i)
+	enddo
+	l(n-1) = 0
 
+	!ahora construyo la matriz
+		
+	
 end module
