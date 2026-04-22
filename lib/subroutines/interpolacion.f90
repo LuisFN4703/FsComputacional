@@ -104,10 +104,17 @@ real*8, intent(in) :: x(0:n), a(0:n)
 real*8, intent(in) :: xint
 real*8, intent(out) :: yint
 
+!Declaracion de variables para LAPACK
+integer :: NRHS
+integer :: LDA
+integer :: IPIV(0:n)
+integer :: LDB
+integer :: INFO
+
 real*8 :: b(0,n), c(0,n), d(0,n), h(0,n)
 integer :: nd, s, inf
 
-real*8 :: l(0,n), dp(0,n), u(0,n) !vectores para cargar la matriz tridiagonal
+real*8 :: l(0,n), d(0,n), u(0,n) !vectores para cargar la matriz tridiagonal
 real*8 :: matriz(0:n, 0:n)
 integer :: i, j
 
@@ -153,6 +160,25 @@ integer :: i, j
 	do i=0, n
 		matriz(i, i) = d(i)
 	enddo
+
+	!Paso 4: usar LAPACK para resolver A*x = b
+	!Primero asigno los valores de b a c, para que LAPACK los guarde alli para mantener notacion 
+
+	c = b
+	call dgesv(n+1, 1, matriz, n+1, ipiv, c, n+1, info)
+
+	!Paso 5: obtener los coeficiente b y d
+	do i=0, n-1
+		b(i) = (a(i+1) - a(i))/h(i) - (h(i)*(c(i+1)+2*c(i)))/3
+		d(i) = (c(i+1) - c(i))/(3*h(i))
+	enddo
 	
+	!Paso 6: costruccion del polinomio
+	do i = 0, n-1
+		if (x(i) <= x .and x <= x(i+1)) then
+			yint = a(i) + b(i)*(xint - x(i)) + c(i)*((xint - x(i))**2) + d(i)*((xint - x(i))**3)
+			exit
+		endif
+	enddo
 	
 end module
