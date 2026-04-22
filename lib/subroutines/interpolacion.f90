@@ -97,7 +97,7 @@ difdiv=(yf-yi)/(xf-xi)
 return
 end 
 
-subroutine splines_cubicos(n, xint, yint, x, a)
+subroutine splines_cubicos(n, x, a, xint, yint)
 implicit none
 integer, intent(in) :: n
 real*8, intent(in) :: x(0:n), a(0:n)
@@ -120,7 +120,7 @@ integer :: i, j
 !Paso 2: costruccion de b (vector)
 	b(0) = 0
 	do i=1, n-1
-		b(i) = (3/h(i))*(yint(i+1)-yint(i)) - (3/h(i-1))*(yint(i)-yint(i-1))
+		b(i) = (3/h(i))*(a(i+1)-a(i)) - (3/h(i-1))*(a(i)-a(i-1))
 	enddo
 	b(n) = 0
 
@@ -134,7 +134,7 @@ integer :: i, j
 	!construyo el vector d
 	d(0)=1
 	do i = 1, n-1
-		d(i) = 2*(h(i-2)+h(i-1))
+		d(i) = 2*(h(i-1)+h(i))
 	enddo
 	d(n) = 1
 	
@@ -145,6 +145,14 @@ integer :: i, j
 	l(n-1) = 0
 
 	!ahora construyo la matriz
-		
+	matriz = 0.0_dp
+	do i = 1, n-1
+		matriz(i, i+1) = u(i)
+		matriz(i, i-1) = l(i-1)
+	enddo
+	do i=0, n
+		matriz(i, i) = d(i)
+	enddo
+	
 	
 end module
