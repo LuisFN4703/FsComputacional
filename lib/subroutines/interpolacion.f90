@@ -62,15 +62,15 @@ else
 endif
 
 print*,'--------------------DD(i,j)----------------'
-print*,
+print*, ""
 
 do i=1,n 
  write(*,'(*(f6.2,3x))') (dd(i,j) ,j=1,n)
 enddo
 
 
-print*,
-print*,
+print*,""
+print*,""
      
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!    
 !Construyo el polinomio de interpolación y calculo yint
@@ -99,24 +99,20 @@ end
 
 subroutine splines_cubicos(n, x, a, xint, yint)
 implicit none
-integer, intent(in) :: n
-real*8, intent(in) :: x(0:n), a(0:n)
-real*8, intent(in) :: xint
-real*8, intent(out) :: yint
+    ! Argumentos
+    integer, intent(in) :: n
+    real*8, intent(in)  :: x(0:n), a(0:n)
+    real*8, intent(in)  :: xint
+    real*8, intent(out) :: yint
 
-!Declaracion de variables para LAPACK
-integer :: NRHS
-integer :: LDA
-integer :: IPIV(0:n)
-integer :: LDB
-integer :: INFO
+    ! Variables para LAPACK
+    integer :: ipiv(0:n)
+    integer :: info
 
-real*8 :: b(0,n), c(0,n), d(0,n), h(0,n)
-integer :: nd, s, inf
-
-real*8 :: l(0,n), d(0,n), u(0,n) !vectores para cargar la matriz tridiagonal
-real*8 :: matriz(0:n, 0:n)
-integer :: i, j
+    ! Arreglos internos del spline
+    real*8 :: b(0:n), c(0:n), d(0:n), h(0:n-1)
+    real*8 :: matriz(0:n, 0:n)
+    integer :: i
 
 
 !Paso 1: construccion de h
@@ -132,40 +128,26 @@ integer :: i, j
 	b(n) = 0
 
 !Paso 3: construccion de la matriz
-	!costruyo el vector u
-	u(0) = 0
-	do i = 1, n-1
-		u(i) = h(i)
-	enddo
-	
-	!construyo el vector d
-	d(0)=1
-	do i = 1, n-1
-		d(i) = 2*(h(i-1)+h(i))
-	enddo
-	d(n) = 1
-	
-	!costruyo el vector l
-	do i=0, n-2
-		l(i) = h(i)
-	enddo
-	l(n-1) = 0
+    matriz = 0.0d0
+    matriz(0, 0) = 1.0d0
+    matriz(n, n) = 1.0d0
 
-	!ahora construyo la matriz
-	matriz = 0.0_dp
-	do i = 1, n-1
-		matriz(i, i+1) = u(i)
-		matriz(i, i-1) = l(i-1)
-	enddo
-	do i=0, n
-		matriz(i, i) = d(i)
-	enddo
+    do i = 1, n-1
+        matriz(i, i-1) = h(i-1)                     ! Diagonal inferior
+        matriz(i, i)   = 2.0d0 * (h(i-1) + h(i))    ! Diagonal principal
+        matriz(i, i+1) = h(i)                       ! Diagonal superior
+    end do
 
 	!Paso 4: usar LAPACK para resolver A*x = b
 	!Primero asigno los valores de b a c, para que LAPACK los guarde alli para mantener notacion 
 
 	c = b
 	call dgesv(n+1, 1, matriz, n+1, ipiv, c, n+1, info)
+	! Control de seguridad
+	if (info /= 0) then
+		print *, "Error al resolver el sistema: DGESV retornó info = ", info
+		return
+	end if
 
 	!Paso 5: obtener los coeficiente b y d
 	do i=0, n-1
@@ -175,10 +157,11 @@ integer :: i, j
 	
 	!Paso 6: costruccion del polinomio
 	do i = 0, n-1
-		if (x(i) <= x .and x <= x(i+1)) then
+		if (xint >= x(i) .and. xint <= x(i+1)) then
 			yint = a(i) + b(i)*(xint - x(i)) + c(i)*((xint - x(i))**2) + d(i)*((xint - x(i))**3)
 			exit
 		endif
 	enddo
+end subroutine
 	
 end module
