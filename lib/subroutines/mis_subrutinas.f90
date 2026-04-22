@@ -1,5 +1,7 @@
 module mis_subrutinas
 implicit none
+integer, parameter :: dp = selected_real_kind(15, 307)
+
 contains
 
 !subrutina para sacar la primera fila (encabezado) y la primera columna
@@ -36,16 +38,17 @@ end subroutine matriz_util
 
 
 !subrutina para crear vectores a partir de las columnas de una matriz nrow x 3
-subroutine crear_vectores(nrow, v1, v2, v3, v4, v5)
-    !character(len=*), intent(in) :: nombre
+subroutine crear_vectores(nombre, nrow, v1, v2)
+    character(len=*), intent(in) :: nombre
     integer, intent(in) :: nrow
-    real(8), intent(out) :: v1(nrow), v2(nrow), v3(nrow), v4(nrow), v5(nrow) 
+    real(8), intent(out) :: v1(0:nrow), v2(0:nrow)
     integer :: i
 
-    !open(23, file=trim(nombre), status='old')
+    open(23, file=trim(nombre), status='old')
 
-    do i=1, nrow
-        read(23, *) v1(i), v2(i), v3(i), v4(i), v5(i)
+	read(23, *)
+    do i=0, nrow - 1
+        read(23, *) v1(i), v2(i)
     enddo
 
     close(23)
