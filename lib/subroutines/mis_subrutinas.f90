@@ -35,7 +35,21 @@ subroutine matriz_util(nombre_archivo, nrow, ncol, matriz)
 	
 end subroutine matriz_util
 !--------------------------------------------------------------------------------------------
-
+subroutine contarfilas(file_name, nrow)
+    character(len=*), intent(in) :: file_name
+    integer, intent(out) :: nrow
+    integer :: ier
+    
+    nrow = 0
+    open(unit=10, file=trim(file_name), status='old', action='read')
+    do
+        read(10, *, iostat=ier)
+        if (ier /= 0) exit
+        nrow = nrow + 1
+    end do
+    close(10)
+    return
+end subroutine
 
 !subrutina para crear vectores a partir de las columnas de una matriz nrow x 3
 subroutine crear_vectores(nombre, nrow, v1, v2)

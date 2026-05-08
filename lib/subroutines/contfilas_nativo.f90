@@ -1,4 +1,4 @@
-subroutine contarfilas_nativo(file_name, nrow)
+subroutine contarfilas(file_name, nrow)
     character(len=*), intent(in) :: file_name
     integer, intent(out) :: nrow
     integer :: ier
