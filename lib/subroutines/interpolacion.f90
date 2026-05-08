@@ -97,6 +97,35 @@ difdiv=(yf-yi)/(xf-xi)
 return
 end 
 
+subroutine splines_lineales(n, x, y, xint, yint)
+    implicit none
+    integer, intent(in) :: n
+    real*8, intent(in) :: x(n), y(n)
+    real*8, intent(in) :: xint
+    real*8, intent(out) :: yint
+    
+    integer :: i
+    
+    ! Verificación de que el punto este dentro del rango de datos 
+    if (xint < x(1) .or. xint > x(n)) then
+        print *, 'Error: el valor de x para interpolar esta fuera de rango.'
+        yint = 0.0d0
+        return
+    end if
+
+    ! Busqueda del intervalo i tal que x(i) <= xint <= x(i+1) 
+    do i = 1, n - 1
+        if (xint <= x(i+1)) then
+            ! Aplicación de la forma de Lagrange para el intervalo i 
+            ! f_i(x) = [(x - x_{i+1}) / (x_i - x_{i+1})] * y_i + [(x - x_i) / (x_{i+1} - x_i)] * y_{i+1}
+            yint = ((xint - x(i+1)) / (x(i) - x(i+1))) * y(i) + &
+                   ((xint - x(i)) / (x(i+1) - x(i))) * y(i+1)
+            exit ! Salir del bucle una vez encontrado el intervalo e interpolado 
+        end if
+    end do
+end subroutine splines_lineales
+
+
 subroutine splines_cubicos(n, x, a, xint, yint)
 implicit none
     ! Argumentos
