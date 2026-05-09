@@ -7,7 +7,7 @@ implicit none
     real(8) :: h
 
     call leer_input(n, x, y)
-    call inciso_1(n, x, y, 0.20, "interpolacion.out")
+    call inciso_1(n, x, y, 0.2_dp, "interpolacion.out")
 
     deallocate(x, y)
 end program main
