@@ -33,69 +33,46 @@ END
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!Subrutina polinomios de Newton !!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    subroutine generar_tabla_newton(n, x, y, dd)
+        implicit none
+        integer, intent(in) :: n
+        real*8, intent(in) :: x(n), y(n)
+        real*8, intent(out) :: dd(n, n)
+        
+        integer :: i, j
+        
+        dd = 0.0d0
+        do i = 1, n
+            dd(i, 1) = y(i)
+        end do
 
-Subroutine Interpol_Newton(n, xint, yint, X, Y, a, dd)  
-  integer, intent(in) :: n
-  real*8,intent(in)::  X(n),Y(n)
-  real*8, intent(out) :: a(n)
-  real*8, intent(out) ::  DD(n,n)
-  real*8 :: xint, yint, xn
- 
-!70 format(a2,i3,'   x(i)=',f8.3,'   y(i)=',f8.3,'   d(i,1)=',f8.3) 
-  
-  ! Cheque si el punto de interpolación es correcto
-if ((xint<minval(X)).or. (xint > maxval(x)) ) Then
-   print*, 'El valor de x se encuentra fuera del intervalo de los puntos de datos'
-   return
-else
+        do j = 2, n
+            do i = 1, n - j + 1
+                !f[x_j...x_i] = (f[x_j...x_{i+1}] - f[x_{j-1}...x_i]) / (x_f - x_i)
+                dd(i, j) = (dd(i+1, j-1) - dd(i, j-1)) / (x(j-1+i) - x(i))
+            end do
+        end do
+    end subroutine generar_tabla_newton
 
-  ! Genera las diferencias divididas
-  do i=1,n
-   dd(i,1)= Y(i)
-  enddo
-
-  do j=2, n
-    do i=1, n-j+1
-      DD(i,j) = difdiv(x(j-1+i),x(i),dd(i+1,j-1),dd(i,j-1))
-    enddo
-  enddo
-endif
-
-print*,'--------------------DD(i,j)----------------'
-print*, ""
-
-do i=1,n 
- write(*,'(*(f6.2,3x))') (dd(i,j) ,j=1,n)
-enddo
-
-
-print*,""
-print*,""
-     
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!    
-!Construyo el polinomio de interpolación y calculo yint
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-yint=dd(1,1)
- xn=1
- do j=2,n
-  xn=xn*(xint-x(j-1))
-  yint=yint+dd(1,j)*xn
- enddo
-
-return
-end subroutine
-
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
-!!!!!!!!funcion diferencia dividida !!!!!!!!!!!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-real*8 function  difdiv(xf, xi, yf,yi)
-implicit none
-real*8 yf, yi, xf, xi
-difdiv=(yf-yi)/(xf-xi)
-return
-end 
+    subroutine evaluar_newton(n, x, dd, xint, yint)
+        implicit none
+        integer, intent(in) :: n
+        real*8, intent(in) :: x(n), dd(n, n)
+        real*8, intent(in) :: xint
+        real*8, intent(out) :: yint
+        
+        integer :: j
+        real*8 :: xn
+        
+        yint = dd(1, 1)
+        xn = 1.0d0
+        
+        ! polinomio: a1 + a2(x-x1) + a3(x-x1)(x-x2) + ...
+        do j = 2, n
+            xn = xn * (xint - x(j-1))
+            yint = yint + dd(1, j) * xn
+        end do
+    end subroutine evaluar_newton
 
 subroutine splines_lineales(n, x, y, xint, yint)
     implicit none
