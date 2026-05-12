@@ -1,29 +1,27 @@
-subroutine inciso_1(n, x, y, h, filename)
+subroutine inciso_1(n, x, y, h, filename, n_out, x_out, y_out)
     use mod_tp1
     use interpolacion
     implicit none
     
-    integer, intent(in) :: n
+    integer, intent(in) :: n, n_out
     real(dp), intent(in) :: x(n), y(n)
     real(dp), intent(in) :: h
     character(len=*), intent(in) :: filename
 
-    integer :: i, n_puntos
+	real(dp), intent(out) :: x_out(n_out), y_out(n_out)
+
+    integer :: i 
     real(dp) :: x_actual, y_lag, y_new, y_spl, y_exa
     real(dp) :: dd(n, n) ! Matriz de diferencias divididas
 
     call generar_tabla_newton(n, x, y, dd)
-
-    n_puntos = int((x(n) - x(1)) / h) + 1
     
-    open(unit=1, file=filename, status='replace')
-    ! Encabezado para identificar columnas en xmgrace o gnuplot
-    write(1, '(A15, 4A22)') "# x", "y_Lagrange", "y_Newton", "y_Spline", "y_Exacta"
+    open(unit=18, file=filename, status='replace')
+    write(18, '(A15, 4A22)') "# x", "y_Lagrange", "y_Newton", "y_Spline", "y_Exacta"
 
-    do i = 1, n_puntos
+    do i = 1, n_out
         x_actual = x(1) + dble(i-1) * h
-        
-        if (i == n_puntos) x_actual = x(n)
+        if (i == n_out) x_actual = x(n)
 
         ! --- Llamadas a los interpoladores ---
         y_lag = lagrange(x_actual, n, x, y)
@@ -34,10 +32,12 @@ subroutine inciso_1(n, x, y, h, filename)
         y_exa = y_exacta(x_actual)
 
         ! 2. Guardado 
-        write(1, '(5E22.12)') x_actual, y_lag, y_new, y_spl, y_exa
+        write(18, '(5E22.12)') x_actual, y_lag, y_new, y_spl, y_exa
+        x_out(i) = x_actual
+		y_out(i) = y_spl
     end do
 
-    close(1)
+    close(18)
     print *, "TP1: Archivo generado: ", trim(filename), " con h =", h
 
 end subroutine inciso_1

@@ -2,7 +2,6 @@ subroutine inciso_3(n_int, x_int, y_int, filename)
     use mod_tp1
     use derivacion_integracion
     implicit none
-    integer, parameter :: dp = kind(1.0d0)
     integer, intent(in) :: n_int
     real(dp), intent(in) :: x_int(n_int), y_int(n_int)
     character(len=*), intent(in) :: filename

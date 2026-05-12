@@ -1,6 +1,6 @@
 module mod_tp1
+	use mis_subrutinas, only: dp
     implicit none
-    integer, parameter :: dp = kind(1.0d0)
 
 contains
 
