@@ -38,6 +38,6 @@ subroutine inciso_1(n, x, y, h, filename, n_out, x_out, y_out)
     end do
 
     close(18)
-    print *, "TP1: Archivo generado: ", trim(filename), " con h =", h
-
+	print '("Interpolación generada en: ", A, " con h = ", F4.2)', trim(filename), h
+    
 end subroutine inciso_1

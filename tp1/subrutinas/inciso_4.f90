@@ -36,6 +36,6 @@ subroutine inciso_4(n_int, x_int, dy_int, y_inicial, filename)
     end do
     
     close(14)
-    print *, "TP1: Inciso 4 completado. Resultados en: ", trim(filename)
+    print *, "Resultados de integración en: ", trim(filename)
     
 end subroutine inciso_4

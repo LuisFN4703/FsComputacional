@@ -1,22 +1,44 @@
 program main
-use mis_subrutinas
-use mod_lectura  
-implicit none
-	integer :: n, n_out
-    real(dp), allocatable :: x(:), y(:)
-    real(dp), allocatable :: x_int(:), y_spl_int(:), dy_central(:)
-    real(dp) :: h1
+    use mis_subrutinas
+    use mod_lectura
+    use mod_tp1
+    implicit none
 
-	h1 = 0.2_dp
+    integer :: n, n_int
+    real(dp), allocatable :: x(:), y(:)
+    real(dp), allocatable :: x_int(:), y_int(:), dy_int(:)
+    real(dp) :: h_paso
+
     call leer_input(n, x, y)
 
-	n_out = int((x(n) - x(1)) / h1) + 1
-    allocate(x_int(n_out), y_spl_int(n_out), dy_central(n_out))
-    
-    call inciso_1(n, x, y, h1, "interpolacion.out", n_out, x_int, y_spl_int)
-    call inciso_2(n, x, y, h1)
-	call inciso_3(n_out, x_int, y_spl_int, "derivadas_h02.out", dy_central)
-	call inciso_4(n_out, x_int, dy_central, y(1), "integracion_h02.out")
+    ! ==========================================
+    ! PASO h = 0.2
+    ! ==========================================
+    h_paso = 0.2_dp
+    n_int = int((x(n) - x(1)) / h_paso) + 1
+    allocate(x_int(n_int), y_int(n_int), dy_int(n_int))
 
-    deallocate(x, y, x_int, y_spl_int, dy_central)
+    call inciso_1(n, x, y, h_paso, "interpolacion_h02.out", n_int, x_int, y_int)
+    call inciso_2(n, x, y, h_paso, "errores_h02.out")
+    call inciso_3(n_int, x_int, y_int, "derivadas_h02.out", dy_int)
+    call inciso_4(n_int, x_int, dy_int, y(1), "integracion_h02.out")
+
+    deallocate(x_int, y_int, dy_int)
+
+	print *
+    ! ==========================================
+    ! PASO h = 0.04
+    ! ==========================================
+    h_paso = 0.04_dp
+    n_int = int((x(n) - x(1)) / h_paso) + 1
+    allocate(x_int(n_int), y_int(n_int), dy_int(n_int))
+
+    call inciso_1(n, x, y, h_paso, "interpolacion_h004.out", n_int, x_int, y_int)
+    call inciso_2(n, x, y, h_paso, "errores_h004.out")
+    call inciso_3(n_int, x_int, y_int, "derivadas_h004.out", dy_int)
+    call inciso_4(n_int, x_int, dy_int, y(1), "integracion_h004.out")
+
+    deallocate(x_int, y_int, dy_int, x, y)
+
+    print *, "TP1: Proceso completado para ambos pasos de h."
 end program main
