@@ -15,7 +15,7 @@ implicit none
     
     call inciso_1(n, x, y, h1, "interpolacion.out", n_out, x_int, y_spl_int)
     call inciso_2(n, x, y, h1)
-	call inciso_3(n_out, x_int, y_spl_int, "derivadas_h02.out")
+	call inciso_3(n_out, x_int, y_spl_int, "derivadas_h02.out", dy_central)
 	call inciso_4(n_out, x_int, dy_central, y(1), "integracion_h02.out")
 
     deallocate(x, y, x_int, y_spl_int, dy_central)

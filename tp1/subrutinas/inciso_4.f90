@@ -11,16 +11,11 @@ subroutine inciso_4(n_int, x_int, dy_int, y_inicial, filename)
     real(dp) :: y_rec(n_int), y_exa, err_rel, integral_temp
     integer :: i
     
-    ! 1. El primer punto es la condición inicial original y(x1)
     y_rec(1) = y_inicial
     
-    ! 2. Recuperamos la función integrando la derivada acumuladamente
-    ! Usamos la subrutina 'trapecio' de tu módulo
-	y_rec(1) = y_inicial
-	do i = 1, n_int - 1
-		! Calculamos solo el área del trapecio "nuevo"
-		h = x_int(i+1) - x_int(i)
-		y_rec(i+1) = y_rec(i) + (h / 2.0_dp) * (dy_int(i) + dy_int(i+1))
+	do i = 2, n_int
+    	call trapecio(i, x_int(1:i), dy_int(1:i), integral_temp)
+    	y_rec(i) = y_inicial + integral_temp
 	end do
     
     ! 3. Guardado de resultados y cálculo de error relativo
