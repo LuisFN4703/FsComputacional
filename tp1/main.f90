@@ -8,6 +8,7 @@ implicit none
 
     call leer_input(n, x, y)
     call inciso_1(n, x, y, 0.2_dp, "interpolacion.out")
+    call inciso_2(n, x, y, 0.2_dp)
 
     deallocate(x, y)
 end program main

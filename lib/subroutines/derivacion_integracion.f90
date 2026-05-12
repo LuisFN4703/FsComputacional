@@ -25,7 +25,6 @@ contains
             ! fórmula: f'(x) = [f(x+h) - f(x)] / h
             dy(i) = (y(i+1) - y(i)) / h
         end do
-        .
         dy(n) = dy(n-1) 
         
     end subroutine derivada_adelante
