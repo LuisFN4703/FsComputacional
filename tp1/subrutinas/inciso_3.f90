@@ -1,11 +1,12 @@
-subroutine inciso_3(n_int, x_int, y_int, filename)
+subroutine inciso_3(n_int, x_int, y_int, filename, dy_central)
     use mod_tp1
     use derivacion_integracion
     implicit none
     integer, intent(in) :: n_int
     real(dp), intent(in) :: x_int(n_int), y_int(n_int)
     character(len=*), intent(in) :: filename
-    real(dp) :: dy_fwd(n_int), dy_bwd(n_int), dy_central(n_int), dy_exac
+    real(dp) :: dy_fwd(n_int), dy_bwd(n_int), dy_exac
+    real(dp), intent(out) :: dy_central(n_int)
     integer :: i
     
     ! 1. derivadas
