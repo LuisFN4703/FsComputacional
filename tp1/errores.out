@@ -1,0 +1,36 @@
+ === ANALISIS DE INTERVALOS CON ERROR > 10% (h =  0.20000000000000001      ) ===
+ 
+Metodo: Lagrange
+  -> Intervalo: [  -9.800 ;   -9.000]
+  -> Intervalo: [  -8.800 ;   -8.000]
+  -> Intervalo: [  -7.800 ;   -7.000]
+  -> Intervalo: [  -6.800 ;   -6.000]
+  -> Intervalo: [  -5.800 ;   -5.200]
+  -> Intervalo: [  -3.600 ;   -3.200]
+  -> Intervalo: [   3.400 ;    3.800]
+  -> Intervalo: [   5.400 ;    6.000]
+  -> Intervalo: [   6.200 ;    7.000]
+  -> Intervalo: [   7.200 ;    8.000]
+  -> Intervalo: [   8.200 ;    9.000]
+  -> Intervalo: [   9.200 ;   10.000]
+ 
+Metodo: Newton
+  -> Intervalo: [  -9.800 ;   -9.000]
+  -> Intervalo: [  -8.800 ;   -8.000]
+  -> Intervalo: [  -7.800 ;   -7.000]
+  -> Intervalo: [  -6.800 ;   -6.000]
+  -> Intervalo: [  -5.800 ;   -5.200]
+  -> Intervalo: [  -3.600 ;   -3.200]
+  -> Intervalo: [   3.400 ;    3.800]
+  -> Intervalo: [   5.400 ;    6.000]
+  -> Intervalo: [   6.200 ;    7.000]
+  -> Intervalo: [   7.200 ;    8.000]
+  -> Intervalo: [   8.200 ;    9.000]
+  -> Intervalo: [   9.200 ;   10.000]
+ 
+Metodo: Splines
+  -> Intervalo: [  -3.600 ;   -3.200]
+  -> Intervalo: [  -0.400 ;    0.000]
+  -> Intervalo: [   0.200 ;    0.600]
+  -> Intervalo: [   3.400 ;    3.800]
+ 
