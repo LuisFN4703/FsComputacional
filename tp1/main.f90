@@ -18,10 +18,10 @@ program main
     n_int = int((x(n) - x(1)) / h_paso) + 1
     allocate(x_int(n_int), y_int(n_int), dy_int(n_int))
 
-    call inciso_1(n, x, y, h_paso, "interpolacion_h02.out", n_int, x_int, y_int)
-    call inciso_2(n, x, y, h_paso, "errores_h02.out")
-    call inciso_3(n_int, x_int, y_int, "derivadas_h02.out", dy_int)
-    call inciso_4(n_int, x_int, dy_int, y(1), "integracion_h02.out")
+    call inciso_1(n, x, y, h_paso, "outputs/interpolacion_h02.out", n_int, x_int, y_int)
+    call inciso_2(n, x, y, h_paso, "outputs/errores_h02.out")
+    call inciso_3(n_int, x_int, y_int, "outputs/derivadas_h02.out", dy_int)
+    call inciso_4(n_int, x_int, dy_int, y(1), "outputs/integracion_h02.out")
 
     deallocate(x_int, y_int, dy_int)
 
@@ -33,10 +33,10 @@ program main
     n_int = int((x(n) - x(1)) / h_paso) + 1
     allocate(x_int(n_int), y_int(n_int), dy_int(n_int))
 
-    call inciso_1(n, x, y, h_paso, "interpolacion_h004.out", n_int, x_int, y_int)
-    call inciso_2(n, x, y, h_paso, "errores_h004.out")
-    call inciso_3(n_int, x_int, y_int, "derivadas_h004.out", dy_int)
-    call inciso_4(n_int, x_int, dy_int, y(1), "integracion_h004.out")
+    call inciso_1(n, x, y, h_paso, "outputs/interpolacion_h004.out", n_int, x_int, y_int)
+    call inciso_2(n, x, y, h_paso, "outputs/errores_h004.out")
+    call inciso_3(n_int, x_int, y_int, "outputs/derivadas_h004.out", dy_int)
+    call inciso_4(n_int, x_int, dy_int, y(1), "outputs/integracion_h004.out")
 
     deallocate(x_int, y_int, dy_int, x, y)
 
