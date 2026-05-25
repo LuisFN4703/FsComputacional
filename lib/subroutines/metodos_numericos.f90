@@ -12,6 +12,7 @@ subroutine euler(x0, y0, n, h, x, y, f)
     
 	interface
 		real(dp) function f(x, y)
+			import :: dp
 			real(dp), intent(in) :: x, y
 		end function f
 	end interface 
@@ -37,6 +38,7 @@ subroutine euler_mod(x0, y0, n, h, x, y, f)
     
 	interface
 		real(dp) function f(x, y)
+			import :: dp
 			real(dp), intent(in) :: x, y
 		end function f
 	end interface 
@@ -64,8 +66,9 @@ subroutine rk2_heun(x0, y0, n, h, x, y, f)
     
 	interface
 		real(dp) function f(x, y)
+			import :: dp
 			real(dp), intent(in) :: x, y
-		end function 
+		end function f
 	end interface
 
 	x(0) = x0
@@ -93,8 +96,9 @@ subroutine rk2_ptomedio(x0, y0, n, h, x, y, f)
     
 	interface
 		real(dp) function f(x, y)
+			import :: dp
 			real(dp), intent(in) :: x, y
-		end function 
+		end function f
 	end interface
 
 	x(0) = x0
@@ -122,8 +126,9 @@ real(dp), intent(in) :: x0, y0, h
     
 	interface
 		real(dp) function f(x, y)
+			import :: dp
 			real(dp), intent(in) :: x, y
-		end function 
+		end function f
 	end interface
 
 	x(0) = x0
@@ -142,4 +147,48 @@ real(dp), intent(in) :: x0, y0, h
 
 end subroutine rk4 
 !-------------------------------------------------------------------------------
+
+!----------------- metodo rk4 para sistemas -------------------
+!En gral m =2 porque es para resolver edos de 2do orden
+subroutine rk4_sist(x0, y0, n, h, m, x, y, f)
+    implicit none
+    integer, intent(in) :: n, m
+    real(dp), intent(in) :: x0, h
+    
+    real(dp), intent(in) :: y0(m)
+
+    real(dp), intent(inout) :: x(0:n)
+    real(dp), intent(inout) :: y(0:n, m) 
+    
+    integer :: i
+
+    real(dp) :: k1(m), k2(m), k3(m), k4(m)
+    
+    interface
+        function f(x, y, m)
+            import :: dp
+            implicit none
+            integer, intent(in) :: m
+            real(dp), intent(in) :: x
+            real(dp), intent(in) :: y(m)
+            real(dp) :: f(m)
+        end function f
+    end interface
+
+    x(0) = x0
+    y(0, :) = y0(:)  
+    do i = 1, n
+        x(i) = x(i-1) + h
+        
+        k1 = f(x(i-1), y(i-1, :), m)
+        k2 = f(x(i-1) + 0.5_dp * h, y(i-1, :) + 0.5_dp * k1 * h, m)
+        k3 = f(x(i-1) + 0.5_dp * h, y(i-1, :) + 0.5_dp * k2 * h, m)
+        k4 = f(x(i-1) + h, y(i-1, :) + k3 * h, m)
+
+        y(i, :) = y(i-1, :) + (k1 + 2.0_dp * k2 + 2.0_dp * k3 + k4) * (h / 6.0_dp)
+    end do
+
+end subroutine rk4_sist
+!--------------------------------------------------------------
+
 end module
