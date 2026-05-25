@@ -1,6 +1,6 @@
 module mis_subrutinas
 implicit none
-integer, parameter :: dp = selected_real_kind(15, 307)
+integer, parameter :: dp = kind(1.0d0)
 
 contains
 

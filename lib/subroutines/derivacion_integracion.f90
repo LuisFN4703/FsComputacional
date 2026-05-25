@@ -1,6 +1,7 @@
 module derivacion_integracion
+	use mis_subrutinas, only: dp
     implicit none
-    integer, parameter :: dp = kind(1.0d0)
+    
 
 contains
 !--------------------------------------------------------------------------------
