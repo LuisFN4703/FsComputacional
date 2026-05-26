@@ -1,6 +1,6 @@
 set terminal pngcairo size 800,600 enhanced font 'Times New Roman,11'
 set grid
-set output 'Graficotp2.png'
+set output 'graficos/Graficotp2.png'
 
 
 
