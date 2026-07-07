@@ -149,7 +149,7 @@ end subroutine rk4
 !-------------------------------------------------------------------------------
 
 !----------------- metodo rk4 para sistemas -------------------
-!En gral m =2 porque es para resolver edos de 2do orden
+!En gral m =2 porque es para resolver edos de 2do orden. m vendria a ser el orden de la EDO
 subroutine rk4_sist(x0, y0, n, h, m, x, y, f)
     implicit none
     integer, intent(in) :: n, m
