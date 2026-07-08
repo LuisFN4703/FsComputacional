@@ -191,4 +191,147 @@ subroutine rk4_sist(x0, y0, n, h, m, x, y, f)
 end subroutine rk4_sist
 !--------------------------------------------------------------
 
+!----------------- metodo de disparo (2do orden) -------------------
+subroutine disparo(a, b, alpha, beta, n, tol, max_iter, x, y, f)
+    use mis_subrutinas, only: dp
+    implicit none
+    
+    real(dp), intent(in) :: a, b, alpha, beta, tol
+    integer, intent(in) :: n, max_iter
+    real(dp), intent(inout) :: x(0:n), y(0:n)
+    
+    integer :: i, iter
+    real(dp) :: h, w1, w2, w3, y_b1, y_b2
+    real(dp) :: y_sist(0:n, 2)
+    
+    interface
+        function f(x_val, y_vec, m)
+            import :: dp
+            implicit none
+            integer, intent(in) :: m
+            real(dp), intent(in) :: x_val
+            real(dp), intent(in) :: y_vec(m)
+            real(dp) :: f(m)
+        end function f
+    end interface
+
+    h = (b - a) / real(n, dp)
+    
+    ! Primera estimación de la pendiente W1 [cite: 52, 53]
+    w1 = (beta - alpha) / (b - a) 
+    call rk4_sist(a, [alpha, w1], n, h, 2, x, y_sist, f)
+    y_b1 = y_sist(n, 1) ! Solucion en x=b [cite: 54]
+    
+    if (abs(y_b1 - beta) <= tol) then
+        y(0:n) = y_sist(0:n, 1)
+        return
+    end if
+    
+    ! Segunda estimación W2 [cite: 59, 60]
+    w2 = w1 + 0.1_dp 
+    call rk4_sist(a, [alpha, w2], n, h, 2, x, y_sist, f)
+    y_b2 = y_sist(n, 1) ! Solucion en x=b [cite: 61]
+    
+    ! Proceso iterativo usando interpolación (Secante) [cite: 75, 77, 79]
+    do iter = 1, max_iter
+        if (abs(y_b2 - beta) <= tol) then
+            y(0:n) = y_sist(0:n, 1)
+            return
+        end if
+        
+        ! Calcular nueva pendiente W3 [cite: 76, 77]
+        w3 = w2 - (y_b2 - beta) * (w2 - w1) / (y_b2 - y_b1)
+        
+        ! Actualizar variables para la proxima iteracion
+        w1 = w2
+        y_b1 = y_b2
+        w2 = w3
+        
+        ! Resolver el sistema nuevamente [cite: 78]
+        call rk4_sist(a, [alpha, w2], n, h, 2, x, y_sist, f)
+        y_b2 = y_sist(n, 1)
+    end do
+    
+    print *, "El metodo de disparo no convergio en iteraciones maximas"
+    y(0:n) = y_sist(0:n, 1)
+    
+end subroutine disparo
+!-------------------------------------------------------------------
+
+!----------------- diferencias finitas (2do orden lineal) -------------------
+subroutine diferencias_finitas(a, b, alpha, beta, n_int, x, y, p, q, r)
+    use mis_subrutinas, only: dp
+    implicit none
+    
+    real(dp), intent(in) :: a, b, alpha, beta
+    integer, intent(in) :: n_int ! N subintervalos interiores 
+    real(dp), intent(inout) :: x(0:n_int+1), y(0:n_int+1)
+    
+    integer :: i
+    real(dp) :: h, x_val
+    real(dp) :: diag(n_int), subdiag(n_int), supdiag(n_int), rhs(n_int)
+    
+    ! Variables para el algoritmo de Thomas (solucionador tridiagonal)
+    real(dp) :: c_star(n_int), d_star(n_int)
+    
+    interface
+        real(dp) function p(x)
+            import :: dp
+            real(dp), intent(in) :: x
+        end function p
+        real(dp) function q(x)
+            import :: dp
+            real(dp), intent(in) :: x
+        end function q
+        real(dp) function r(x)
+            import :: dp
+            real(dp), intent(in) :: x
+        end function r
+    end interface
+
+    ! Tamaño del paso y condiciones de frontera 
+    h = (b - a) / real(n_int + 1, dp) 
+    x(0) = a
+    y(0) = alpha 
+    x(n_int+1) = b
+    y(n_int+1) = beta 
+    
+    do i = 1, n_int
+        x(i) = a + i * h 
+    end do
+    
+    ! Construir la matriz tridiagonal A 
+    do i = 1, n_int
+        x_val = x(i)
+        
+        diag(i) = 2.0_dp + (h**2) * q(x_val)
+        subdiag(i) = -1.0_dp - (h / 2.0_dp) * p(x_val) 
+        supdiag(i) = -1.0_dp + (h / 2.0_dp) * p(x_val) 
+        rhs(i) = -(h**2) * r(x_val) 
+    end do
+    
+    ! Ajustar el lado derecho b por las condiciones de frontera 
+    rhs(1) = rhs(1) - subdiag(1) * alpha
+    rhs(n_int) = rhs(n_int) - supdiag(n_int) * beta
+    
+    ! Resolver el sistema A * y = rhs usando algoritmo de Thomas 
+    c_star(1) = supdiag(1) / diag(1)
+    d_star(1) = rhs(1) / diag(1)
+    
+    do i = 2, n_int
+        if (i < n_int) then
+            c_star(i) = supdiag(i) / (diag(i) - subdiag(i) * c_star(i-1))
+        end if
+        d_star(i) = (rhs(i) - subdiag(i) * d_star(i-1)) / &
+                    (diag(i) - subdiag(i) * c_star(i-1))
+    end do
+    
+    y(n_int) = d_star(n_int)
+    do i = n_int - 1, 1, -1
+        y(i) = d_star(i) - c_star(i) * y(i+1)
+    end do
+    
+end subroutine diferencias_finitas
+!----------------------------------------------------------------------------
+
 end module
