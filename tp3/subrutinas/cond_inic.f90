@@ -2,17 +2,17 @@ subroutine cond_ini()
     use mod_ising
     use ziggurat
     implicit none
-    integer :: i, j
-    real :: r
+    integer :: i, k
+    real(8) :: r
 
     ! llenado de la red con espines aleatorios usando la funcion uni() de ziggurat
-    do j = 1, N
+    do k = 1, N
         do i = 1, N
             r = uni() !me genera un nro entre 0 y 1
             if (r < 0.5) then !si r esta entre 0 y 0.5  le asigno 1, sino -1
-                spin(i, j) = 1
+                spin(i, k) = 1
             else
-                spin(i, j) = -1
+                spin(i, k) = -1
             end if
         end do
     end do
