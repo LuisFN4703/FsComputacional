@@ -20,7 +20,7 @@ subroutine correr_produccion(pasos_prod)
         ! acumulacion de los valores en cada instante
         suma_E    = suma_E + E_tot
         suma_E2   = suma_E2 + (E_tot * E_tot)
-        suma_M    = suma_M + abs(M_tot)
+        suma_M    = suma_M + M_tot
         suma_M2   = suma_M2 + (M_tot * M_tot)
         suma_acep = suma_acep + (real(aceptados) / N_total)
     end do
